@@ -15,16 +15,13 @@ export function Card({
   pokemon: { name: string; url: string },
 }) {
 
-  const { data: pokemonDetails, isLoading } = useQuery<Pokemon>({
+  const { data: pokemonDetails, isLoading, error, isError } = useQuery<Pokemon>({
     queryKey: ['pokemon', pokemon.url],
     queryFn: ({ signal }) => fetchPokemonDetails(pokemon.url, signal),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    retry: 2,
-    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <div>Loading...</div>
+  if (isError) return <div className="text-red-500 text-sm">Fejl: {(error as Error).message}</div>
   if (!pokemonDetails) return null;
 
   return (
