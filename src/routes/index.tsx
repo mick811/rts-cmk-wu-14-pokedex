@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 })
 function RouteComponent() {
   const { data, error } = useQuery<Pokemon>({
-    queryKey: ['pokemon', 1],
+    queryKey: ['pokemon'],
     queryFn: () => fetch('https://pokeapi.co/api/v2/pokemon/1').then(res => res.json()) as Promise<Pokemon>
   });
 
