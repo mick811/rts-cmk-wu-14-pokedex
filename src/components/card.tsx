@@ -25,9 +25,9 @@ export function Card({
     return (
       <div className="bg-zinc-900 rounded-lg p-4 hover:bg-zinc-800 transition-colors">
         <img
-          src={pokemonDetails.sprites.front_default ?? ""}
+          src={pokemonDetails.sprites.front_default ?? "https://placehold.co/100"}
           alt={pokemonDetails.name}
-          className="w-24 h-24 mx-auto mb-2"
+          className="w-24 h-24 mx-auto mb-2 rounded-full"
         />
         <h3 className="text-lg font-semibold text-center capitalize">
           {pokemonDetails.name}
