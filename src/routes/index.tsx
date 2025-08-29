@@ -1,18 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { PokemonListResponse } from "@/types/api";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Pokemon } from "@/types/api";
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
 })
 function RouteComponent() {
-  const { data, error } = useQuery<Pokemon>({
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
     queryKey: ['pokemon'],
-    queryFn: () => fetch('https://pokeapi.co/api/v2/pokemon/1').then(res => res.json()) as Promise<Pokemon>
-  });
-
-  if (error) return <div>Error: {error.message}</div>
-  if (!data) return <div>Loading...</div>
-  
-  return <img src={data.sprites.front_default ?? ""} alt="" />
+    queryFn: async ({ pageParam }: { pageParam: string }): Promise<PokemonListResponse> => {
+      const response = await fetch(pageParam)
+      if(!response.ok) {
+        throw new Error('failed to fetch pokemon list')
+      }
+      return response.json()
+    },
+    initialPageParam: 'https://pokeapi.co/api/v2/pokemon?limit=20',
+    getNextPageParam: (lastPage) => lastPage.next,
+  })
 }
