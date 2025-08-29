@@ -7,9 +7,19 @@ import {
 } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import styles from '@/index.css?url'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 export const Route = createRootRoute({
   head: () => ({
@@ -54,6 +64,7 @@ function RootDocument({
         {children}
         <Scripts />
         <ReactQueryDevtools />
+        <TanStackRouterDevtools />
       </body>
     </html>
   )
