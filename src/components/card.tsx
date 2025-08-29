@@ -1,18 +1,19 @@
 import { Pokemon } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 
+const fetchPokemonDetails = async (url: string): Promise<Pokemon> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+      throw new Error('failed to fetch pokemon details');
+  }
+  return response.json() as Promise<Pokemon>;
+};
+
 export function Card({ 
   pokemon,
 }: { 
   pokemon: { name: string; url: string },
 }) {
-    const fetchPokemonDetails = async (url: string): Promise<Pokemon> => {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('failed to fetch pokemon details');
-        }
-        return response.json() as Promise<Pokemon>;
-    };
 
     const { data: pokemonDetails, isLoading } = useQuery<Pokemon>({
       queryKey: ['pokemon', pokemon.name],

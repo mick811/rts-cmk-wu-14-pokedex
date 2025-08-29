@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import styles from '@/index.css?url'
 
 const queryClient = new QueryClient()
@@ -54,6 +55,7 @@ function RootDocument({
         {children}
         <Scripts />
         <ReactQueryDevtools />
+        <TanStackRouterDevtools />
       </body>
     </html>
   )

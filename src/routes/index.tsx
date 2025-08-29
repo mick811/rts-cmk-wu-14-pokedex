@@ -12,7 +12,7 @@ function RouteComponent() {
     queryKey: ['pokemon'],
     queryFn: async ({ pageParam }: { pageParam: string }): Promise<PokemonListResponse> => {
       const response = await fetch(pageParam)
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error('failed to fetch pokemon list')
       }
       return response.json()
@@ -28,20 +28,20 @@ function RouteComponent() {
   // here below is the infinite scroll implementation using intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      if(entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
         fetchNextPage()
       }
     }, { threshold: 0.1 }) // threshold triggers when 10% of the sentinel is visible
 
-    if(loadMoreRef.current) {
+    if (loadMoreRef.current) {
       observer.observe(loadMoreRef.current)
     }
 
     return () => observer.disconnect()
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
-  if(error) return <div className="p-4 text-red-500">Fejl: {error.message}</div>
-  if(isLoading) return <div className="p-4 text-zinc-400">Loader...</div>
+  if (error) return <div className="p-4 text-red-500">Fejl: {error.message}</div>
+  if (isLoading) return <div className="p-4 text-zinc-400">Loader...</div>
 
   const pokemonList = data?.pages.flatMap((page) => page.results) ?? []
 
@@ -54,18 +54,18 @@ function RouteComponent() {
           <Card key={pokemon.name} pokemon={pokemon} />
         ))}
 
-        {/* sentinel div for infinite scroll */}
-        <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
-          {isFetchingNextPage && (
-            <div className="text-zinc-400">Loader flere...</div>
-          )}
-        </div>
-
         {/* if there is no more pokemon to load, show a message */}
         {!hasNextPage && (
           <div className="text-center py-8 text-zinc-400 col-span-full">
-            Du har set alle {data?.pages[0]?.count} pokémons!
+            Du har set alle {data?.pages[0]?.count} Pokémon!
           </div>
+        )}
+      </div>
+
+      {/* sentinel div for infinite scroll */}
+      <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
+        {isFetchingNextPage && (
+          <div className="text-zinc-400">Loader flere...</div>
         )}
       </div>
     </div>

@@ -24,11 +24,13 @@ export interface Pokemon {
     weight: number;
 }
 
+export interface NamedAPIResource {
+    name: string;
+    url: string;
+}
+
 export interface Ability {
-    ability: {
-        name: string;
-        url: string;
-    };
+    ability: NamedAPIResource;
     is_hidden: boolean;
     slot: number;
 }
@@ -40,67 +42,40 @@ export interface Form {
 
 export interface GameIndex {
     game_index: number;
-    version: {
-        name: string;
-        url: string;
-    };
+    version: NamedAPIResource;
 }
 
 export interface HeldItem {
-    item: {
-        name: string;
-        url: string;
-    };
+    item: NamedAPIResource;
     version_details: VersionDetail[];
 }
 
 export interface VersionDetail {
     rarity: number;
-    version: {
-        name: string;
-        url: string;
-    };
+    version: NamedAPIResource;
 }
 
 export interface Move {
-    move: {
-        name: string;
-        url: string;
-    };
+    move: NamedAPIResource;
     version_group_details: VersionGroupDetail[];
 }
 
 export interface VersionGroupDetail {
     level_learned_at: number;
-    move_learn_method: {
-        name: string;
-        url: string;
-    };
+    move_learn_method: NamedAPIResource;
     order: number | null;
-    version_group: {
-        name: string;
-        url: string;
-    };
+    version_group: NamedAPIResource;
 }
 
 export interface PastAbility {
-    ability: {
-        name: string;
-        url: string;
-    };
+    ability: NamedAPIResource;
     is_hidden: boolean;
     slot: number;
-    generation: {
-        name: string;
-        url: string;
-    };
+    generation: NamedAPIResource;
 }
 
 export interface PastType {
-    generation: {
-        name: string;
-        url: string;
-    };
+    generation: NamedAPIResource;
     types: Type[];
 }
 
@@ -150,18 +125,12 @@ export interface Sprites {
 export interface Stat {
     base_stat: number;
     effort: number;
-    stat: {
-        name: string;
-        url: string;
-    };
+    stat: NamedAPIResource;
 }
 
 export interface Type {
     slot: number;
-    type: {
-        name: string;
-        url: string;
-    };
+    type: NamedAPIResource;
 }
 
 export interface SpriteVersions {
