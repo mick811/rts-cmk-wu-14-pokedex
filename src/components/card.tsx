@@ -28,7 +28,7 @@ export function Card({
   return (
     <>
       <Link to={`/pokemon/$`} params={{ _splat: pokemonDetails.name }}>
-        <div className="bg-zinc-900 rounded-lg p-4 hover:bg-zinc-800 transition-colors">
+        <div className="bg-zinc-900 rounded-lg p-4 hover:bg-neutral-700 transition-colors">
           <img
             src={
               pokemonDetails.sprites.other?.['official-artwork']?.front_default

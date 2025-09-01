@@ -33,10 +33,10 @@ function RouteComponent() {
   const officialArtwork =
     pokemon.sprites.other?.['official-artwork'].front_default
     ?? pokemon.sprites.front_default
-    ?? ''
+    ?? 'https://placehold.co/100'
 
   return (
-    <main className="p-4 max-w-5xl mx-auto">
+    <main className="p-4 max-w-5xl mx-auto pb-20">
       <section className='bg-zinc-900 rounded-lg p-6 md:p-8'>
         <div className="flex flex-col md:flex-row gap-8 mb-6">
           {/* Left side - Pokemon info */}
