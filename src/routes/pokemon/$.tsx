@@ -16,15 +16,15 @@ export const Route = createFileRoute('/pokemon/$')({
     return (  
     <div className="p-6 max-w-2xl mx-auto text-center">
       <h2 className="text-2xl font-semibold text-red-500 mb-2">Kunne ikke hente Pokémon</h2>
-      <p className="text-zinc-400 mb-4">{error.message}</p>
-      <Link to="/" className="text-zinc-400 hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
+      <p className="text-zinc-600 dark:text-zinc-400 mb-4">{error.message}</p>
+      <Link to="/" className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
     </div>
     )
   },
   pendingComponent: () => {
     return (
     <div className="p-6 max-w-2xl mx-auto text-center">
-      <div className="text-zinc-400">Henter Pokémon...</div>
+      <div className="text-zinc-600 dark:text-zinc-400">Henter Pokémon...</div>
     </div>
     )
   }
@@ -41,14 +41,14 @@ function RouteComponent() {
 
   return (
     <main className="p-4 max-w-5xl mx-auto pb-20">
-      <section className='bg-zinc-900 rounded-lg p-6 md:p-8'>
+      <section className='bg-white dark:bg-zinc-900 rounded-lg p-6 md:p-8 shadow-sm border border-zinc-200 dark:border-zinc-800'>
         <div className="flex flex-col md:flex-row gap-8 mb-6">
           {/* Left side - Pokemon info */}
           <div className="flex-1">
             <div className="mb-4">
               <Link 
                 to="/" 
-                className="inline-flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors text-sm"
+                className="inline-flex items-center gap-2 text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors text-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -56,9 +56,9 @@ function RouteComponent() {
                 Tilbage til Pokédex
               </Link>
             </div>
-            <h1 className='text-3xl md:text-4xl font-bold capitalize'>
+            <h1 className='text-3xl md:text-4xl font-bold capitalize text-zinc-900 dark:text-white'>
               {pokemon.name}
-              <span className='text-zinc-500 text-lg font-normal ml-3'>
+              <span className='text-zinc-500 dark:text-zinc-400 text-lg font-normal ml-3'>
                 #{String(pokemon.id).padStart(3, '0')}
               </span>
             </h1>
@@ -80,23 +80,23 @@ function RouteComponent() {
             </div>
             <div className="flex items-center gap-2">
               <Switch id="sprites" checked={checked} onCheckedChange={setChecked} />
-              <Label htmlFor='sprites' className="text-sm text-zinc-300">Official Art</Label>
+              <Label htmlFor='sprites' className="text-sm text-zinc-600 dark:text-zinc-300">Official Art</Label>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="text-zinc-500">Base Exp</div>
-          <div className="tabular-nums">{pokemon.base_experience ?? '—'}</div>
-          <div className="text-zinc-500">Height</div>
-          <div>{((pokemon.height ?? 0) / 10).toFixed(1)} m</div>
-          <div className="text-zinc-500">Weight</div>
-          <div>{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</div>
+          <div className="text-zinc-500 dark:text-zinc-400">Base Exp</div>
+          <div className="tabular-nums text-zinc-900 dark:text-zinc-100">{pokemon.base_experience ?? '—'}</div>
+          <div className="text-zinc-500 dark:text-zinc-400">Height</div>
+          <div className="text-zinc-900 dark:text-zinc-100">{((pokemon.height ?? 0) / 10).toFixed(1)} m</div>
+          <div className="text-zinc-500 dark:text-zinc-400">Weight</div>
+          <div className="text-zinc-900 dark:text-zinc-100">{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</div>
         </div>
 
         {/* Base Stats */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Base Stats</h2>
+          <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Base Stats</h2>
           <div className="space-y-3">
             {pokemon.stats.map((s) => (
               <StatBar
@@ -111,7 +111,7 @@ function RouteComponent() {
         {/* Abilities */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-3">Abilities</h2>
+            <h2 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-white">Abilities</h2>
             <div className="flex flex-wrap gap-2">
               {pokemon.abilities.map((a) => (
                 <Badge key={a.ability.name}>
