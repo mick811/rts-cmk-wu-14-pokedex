@@ -41,13 +41,13 @@ function RouteComponent() {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   if (error) return <div className="p-4 text-red-500">Fejl: {error.message}</div>
-  if (isLoading) return <div className="p-4 text-zinc-400">Loader...</div>
+  if (isLoading) return <div className="p-4 text-zinc-600 dark:text-zinc-400">Loader...</div>
 
   const pokemonList = data?.pages.flatMap((page) => page.results) ?? []
 
   return (
     <div className="p-4">
-      <h1 className="text-6xl font-bold text-center mb-8">Pokédex</h1>
+      <h1 className="text-6xl font-bold text-center mb-8 text-zinc-900 dark:text-white">Pokédex</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {pokemonList.map((pokemon) => (
@@ -56,7 +56,7 @@ function RouteComponent() {
 
         {/* if there is no more pokemon to load, show a message */}
         {!hasNextPage && (
-          <div className="text-center py-8 text-zinc-400 col-span-full">
+          <div className="text-center py-8 text-zinc-600 dark:text-zinc-400 col-span-full">
             Du har set alle {data?.pages[0]?.count} Pokémon!
           </div>
         )}
@@ -65,7 +65,7 @@ function RouteComponent() {
       {/* sentinel div for infinite scroll */}
       <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
         {isFetchingNextPage && (
-          <div className="text-zinc-400">Loader flere...</div>
+          <div className="text-zinc-600 dark:text-zinc-400">Loader flere...</div>
         )}
       </div>
     </div>

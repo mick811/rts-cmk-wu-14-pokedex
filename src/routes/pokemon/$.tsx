@@ -1,0 +1,134 @@
+import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router'
+import { Pokemon } from '@/types/api'
+import Badge from '@/components/badge'
+import StatBar from '@/components/statbar'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+
+export const Route = createFileRoute('/pokemon/$')({
+  component: RouteComponent,
+  loader: async ({ params }) => {
+    const slug = encodeURIComponent(params._splat ?? '')
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`)
+    if (!res.ok) {
+      throw new Response(`Failed to load Pokemon`, { status: res.status })
+    }
+    const data = await res.json() as Pokemon
+    return { data }
+  },
+  errorComponent: ({ error }) => {
+    return (
+      <div className="p-6 max-w-2xl mx-auto text-center">
+        <h2 className="text-2xl font-semibold text-red-500 mb-2">Kunne ikke hente Pokémon</h2>
+        <p className="text-zinc-600 dark:text-zinc-400 mb-4">Der opstod en fejl. Prøv igen</p>
+        <Link to="/" className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
+      </div>
+    )
+  },
+  pendingComponent: () => {
+    return (
+      <div className="p-6 max-w-2xl mx-auto text-center">
+        <div className="text-zinc-600 dark:text-zinc-400">Henter Pokémon...</div>
+      </div>
+    )
+  }
+})
+
+function RouteComponent() {
+  const { data: pokemon } = useLoaderData({ from: Route.id })
+  const [checked, setChecked] = useState(true)
+  // retrieve official art from the sprites object
+  const officialArtwork =
+    pokemon.sprites.other?.['official-artwork']?.front_default
+    ?? pokemon.sprites?.front_default
+    ?? 'https://placehold.co/100'
+
+  return (
+    <main className="p-4 max-w-5xl mx-auto pb-20">
+      <section className='bg-white dark:bg-zinc-900 rounded-lg p-6 md:p-8 shadow-sm border border-zinc-200 dark:border-zinc-800'>
+        <div className="flex flex-col md:flex-row gap-8 mb-6">
+          {/* Left side - Pokemon info */}
+          <div className="flex-1">
+            <div className="mb-4">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Tilbage til Pokédex
+              </Link>
+            </div>
+            <h1 className='text-3xl md:text-4xl font-bold capitalize text-zinc-900 dark:text-white'>
+              {pokemon.name}
+              <span className='text-zinc-500 dark:text-zinc-400 text-lg font-normal ml-3'>
+                #{String(pokemon.id).padStart(3, '0')}
+              </span>
+            </h1>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {pokemon.types.map((type) => (
+                <Badge key={type.type.name}>{type.type.name}</Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* Right side - Image and switch */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex justify-center">
+              <img
+                src={checked ? officialArtwork : (pokemon.sprites.front_default ?? officialArtwork)}
+                alt={pokemon.name}
+                loading="lazy"
+                decoding="async"
+                className="w-32 h-32 md:w-48 md:h-48 object-contain"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch id="sprites" checked={checked} onCheckedChange={setChecked} />
+              <Label htmlFor='sprites' className="text-sm text-zinc-600 dark:text-zinc-300">Officiel Illustration</Label>
+            </div>
+          </div>
+        </div>
+
+        <dl className="flex flex-col md:flex-row gap-4 mb-6">
+          <dt className="text-zinc-500 dark:text-zinc-400">Basis Exp</dt>
+          <dd className="tabular-nums text-zinc-900 dark:text-zinc-100">{pokemon.base_experience ?? '–'}</dd>
+          <dt className="text-zinc-500 dark:text-zinc-400">Højde</dt>
+          <dd className="text-zinc-900 dark:text-zinc-100">{((pokemon.height ?? 0) / 10).toFixed(1)} m</dd>
+          <dt className="text-zinc-500 dark:text-zinc-400">Vægt</dt>
+          <dd className="text-zinc-900 dark:text-zinc-100">{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</dd>
+        </dl>
+
+        {/* Base Stats */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Grundstatistikker</h2>
+          <div className="space-y-3">
+            {pokemon.stats.map((s) => (
+              <StatBar
+                key={s.stat.name}
+                label={s.stat.name}
+                value={s.base_stat}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Abilities */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-white">Egenskaber</h2>
+            <div className="flex flex-wrap gap-2">
+              {pokemon.abilities.map((a) => (
+                <Badge key={a.ability.name}>
+                  {a.ability.name.replace('-', ' ')}{a.is_hidden ? ' (skjult)' : ''}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  )
+}
