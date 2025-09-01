@@ -2,6 +2,9 @@ import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router'
 import { Pokemon } from '@/types/api'
 import Badge from '@/components/badge'
 import StatBar from '@/components/statbar'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/pokemon/$')({
   component: RouteComponent,
@@ -25,7 +28,7 @@ export const Route = createFileRoute('/pokemon/$')({
 
 function RouteComponent() {
   const { data: pokemon } = useLoaderData({ from: Route.id })
-
+  const [checked, setChecked] = useState(true)
   // retrieve offical art from the sprites object
   const officialArtwork =
     pokemon.sprites.other?.['official-artwork'].front_default
@@ -34,13 +37,21 @@ function RouteComponent() {
 
   return (
     <main className="p-4 max-w-5xl mx-auto">
-      <div className="mb-6">
-        <Link to="/" className="text-zinc-200 hover:text-zinc-300 underline">Tilbage til Pokédex</Link>
-      </div>
-
       <section className='bg-zinc-900 rounded-lg p-6 md:p-8'>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <div>
+        <div className="flex flex-col md:flex-row gap-8 mb-6">
+          {/* Left side - Pokemon info */}
+          <div className="flex-1">
+            <div className="mb-4">
+              <Link 
+                to="/" 
+                className="inline-flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Tilbage til Pokédex
+              </Link>
+            </div>
             <h1 className='text-3xl md:text-4xl font-bold capitalize'>
               {pokemon.name}
               <span className='text-zinc-500 text-lg font-normal ml-3'>
@@ -54,8 +65,19 @@ function RouteComponent() {
             </div>
           </div>
 
-          <div className="md:mb-0 mb-6">
-            <img src={officialArtwork} alt={pokemon.name} className="w-16 h-16 md:max-w-64 rounded-lg" />
+          {/* Right side - Image and switch */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex justify-center">
+              <img 
+                src={checked ? officialArtwork : pokemon.sprites.front_default ?? ''} 
+                alt={pokemon.name} 
+                className="w-32 h-32 md:w-48 md:h-48 object-contain" 
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch id="sprites" checked={checked} onCheckedChange={setChecked} />
+              <Label htmlFor='sprites' className="text-sm text-zinc-300">Official Art</Label>
+            </div>
           </div>
         </div>
 
