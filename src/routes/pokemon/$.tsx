@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router'
 import { Pokemon } from '@/types/api'
 import Badge from '@/components/badge'
+import StatBar from '@/components/statbar'
 
 export const Route = createFileRoute('/pokemon/$')({
   component: RouteComponent,
@@ -24,6 +25,13 @@ export const Route = createFileRoute('/pokemon/$')({
 
 function RouteComponent() {
   const { data: pokemon } = useLoaderData({ from: Route.id })
+
+  // retrieve offical art from the sprites object
+  const officialArtwork =
+    pokemon.sprites.other?.['official-artwork'].front_default
+    ?? pokemon.sprites.front_default
+    ?? ''
+
   return (
     <main className="p-4 max-w-5xl mx-auto">
       <div className="mb-6">
@@ -45,7 +53,7 @@ function RouteComponent() {
               ))}
             </div>
           </div>
-          
+
           <div className="">
             <img src={pokemon.sprites.front_default ?? ''} alt={pokemon.name} className="w-full h-auto md:max-w-64 rounded-lg" />
           </div>
@@ -58,6 +66,20 @@ function RouteComponent() {
           <div>{((pokemon.height ?? 0) / 10).toFixed(1)} m</div>
           <div className="text-zinc-500">Weight</div>
           <div>{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</div>
+        </div>
+
+        {/* Base Stats */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Base Stats</h2>
+          <div className="space-y-3">
+            {pokemon.stats.map((s) => (
+              <StatBar
+                key={s.stat.name}
+                label={s.stat.name}
+                value={s.base_stat}
+              />
+            ))}
+          </div>
         </div>
       </section>
     </main>
