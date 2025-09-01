@@ -9,23 +9,28 @@ import { useState } from 'react'
 export const Route = createFileRoute('/pokemon/$')({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${params._splat}`)
-    return { data: await pokemonData.json() as Pokemon }
+    const slug = encodeURIComponent(params._splat ?? '')
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`)
+    if (!res.ok) {
+      throw new Response(`Failed to load Pokemon`, { status: res.status })
+    }
+    const data = await res.json() as Pokemon
+    return { data }
   },
   errorComponent: ({ error }) => {
-    return (  
-    <div className="p-6 max-w-2xl mx-auto text-center">
-      <h2 className="text-2xl font-semibold text-red-500 mb-2">Kunne ikke hente Pokémon</h2>
-      <p className="text-zinc-600 dark:text-zinc-400 mb-4">{error.message}</p>
-      <Link to="/" className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
-    </div>
+    return (
+      <div className="p-6 max-w-2xl mx-auto text-center">
+        <h2 className="text-2xl font-semibold text-red-500 mb-2">Kunne ikke hente Pokémon</h2>
+        <p className="text-zinc-600 dark:text-zinc-400 mb-4">Der opstod en fejl. Prøv igen</p>
+        <Link to="/" className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
+      </div>
     )
   },
   pendingComponent: () => {
     return (
-    <div className="p-6 max-w-2xl mx-auto text-center">
-      <div className="text-zinc-600 dark:text-zinc-400">Henter Pokémon...</div>
-    </div>
+      <div className="p-6 max-w-2xl mx-auto text-center">
+        <div className="text-zinc-600 dark:text-zinc-400">Henter Pokémon...</div>
+      </div>
     )
   }
 })
@@ -33,10 +38,10 @@ export const Route = createFileRoute('/pokemon/$')({
 function RouteComponent() {
   const { data: pokemon } = useLoaderData({ from: Route.id })
   const [checked, setChecked] = useState(true)
-  // retrieve offical art from the sprites object
+  // retrieve official art from the sprites object
   const officialArtwork =
-    pokemon.sprites.other?.['official-artwork'].front_default
-    ?? pokemon.sprites.front_default
+    pokemon.sprites.other?.['official-artwork']?.front_default
+    ?? pokemon.sprites?.front_default
     ?? 'https://placehold.co/100'
 
   return (
@@ -46,11 +51,11 @@ function RouteComponent() {
           {/* Left side - Pokemon info */}
           <div className="flex-1">
             <div className="mb-4">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="inline-flex items-center gap-2 text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors text-sm"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 Tilbage til Pokédex
@@ -72,31 +77,33 @@ function RouteComponent() {
           {/* Right side - Image and switch */}
           <div className="flex flex-col items-center gap-4">
             <div className="flex justify-center">
-              <img 
-                src={checked ? officialArtwork : pokemon.sprites.front_default ?? ''} 
-                alt={pokemon.name} 
-                className="w-32 h-32 md:w-48 md:h-48 object-contain" 
+              <img
+                src={checked ? officialArtwork : (pokemon.sprites.front_default ?? officialArtwork)}
+                alt={pokemon.name}
+                loading="lazy"
+                decoding="async"
+                className="w-32 h-32 md:w-48 md:h-48 object-contain"
               />
             </div>
             <div className="flex items-center gap-2">
               <Switch id="sprites" checked={checked} onCheckedChange={setChecked} />
-              <Label htmlFor='sprites' className="text-sm text-zinc-600 dark:text-zinc-300">Official Art</Label>
+              <Label htmlFor='sprites' className="text-sm text-zinc-600 dark:text-zinc-300">Officiel Illustration</Label>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="text-zinc-500 dark:text-zinc-400">Base Exp</div>
-          <div className="tabular-nums text-zinc-900 dark:text-zinc-100">{pokemon.base_experience ?? '—'}</div>
-          <div className="text-zinc-500 dark:text-zinc-400">Height</div>
-          <div className="text-zinc-900 dark:text-zinc-100">{((pokemon.height ?? 0) / 10).toFixed(1)} m</div>
-          <div className="text-zinc-500 dark:text-zinc-400">Weight</div>
-          <div className="text-zinc-900 dark:text-zinc-100">{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</div>
-        </div>
+        <dl className="flex flex-col md:flex-row gap-4 mb-6">
+          <dt className="text-zinc-500 dark:text-zinc-400">Basis Exp</dt>
+          <dd className="tabular-nums text-zinc-900 dark:text-zinc-100">{pokemon.base_experience ?? '–'}</dd>
+          <dt className="text-zinc-500 dark:text-zinc-400">Højde</dt>
+          <dd className="text-zinc-900 dark:text-zinc-100">{((pokemon.height ?? 0) / 10).toFixed(1)} m</dd>
+          <dt className="text-zinc-500 dark:text-zinc-400">Vægt</dt>
+          <dd className="text-zinc-900 dark:text-zinc-100">{((pokemon.weight ?? 0) / 10).toFixed(1)} kg</dd>
+        </dl>
 
         {/* Base Stats */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Base Stats</h2>
+          <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Grundstatistikker</h2>
           <div className="space-y-3">
             {pokemon.stats.map((s) => (
               <StatBar
@@ -111,11 +118,11 @@ function RouteComponent() {
         {/* Abilities */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-white">Abilities</h2>
+            <h2 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-white">Egenskaber</h2>
             <div className="flex flex-wrap gap-2">
               {pokemon.abilities.map((a) => (
                 <Badge key={a.ability.name}>
-                  {a.ability.name.replace('-', ' ')}{a.is_hidden ? ' (hidden)' : ''}
+                  {a.ability.name.replace('-', ' ')}{a.is_hidden ? ' (skjult)' : ''}
                 </Badge>
               ))}
             </div>
