@@ -13,16 +13,20 @@ export const Route = createFileRoute('/pokemon/$')({
     return { data: await pokemonData.json() as Pokemon }
   },
   errorComponent: ({ error }) => {
+    return (  
     <div className="p-6 max-w-2xl mx-auto text-center">
       <h2 className="text-2xl font-semibold text-red-500 mb-2">Kunne ikke hente Pokémon</h2>
       <p className="text-zinc-400 mb-4">{error.message}</p>
-      <Link to="/" className="text-blue-400 hover:text-blue-300 underline">Tilbage til Pokédex</Link>
+      <Link to="/" className="text-zinc-400 hover:text-zinc-200 underline">Tilbage til Pokédex</Link>
     </div>
+    )
   },
   pendingComponent: () => {
+    return (
     <div className="p-6 max-w-2xl mx-auto text-center">
       <div className="text-zinc-400">Henter Pokémon...</div>
     </div>
+    )
   }
 })
 
