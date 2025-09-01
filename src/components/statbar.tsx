@@ -15,7 +15,7 @@ export default function StatBar({
             <span className="w-28 shrink-0 capitalize text-zinc-400">{label.replace('-', ' ')}</span>
             <div className="flex-1 h-2 rounded bg-zinc-800">
                 <div 
-                    className={`h-2 rounded bg-green-600`}
+                    className={`h-2 rounded bg-zinc-200`}
                     style={{ width: `${percentage}%` }}
                 />
             </div>

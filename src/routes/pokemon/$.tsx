@@ -54,8 +54,8 @@ function RouteComponent() {
             </div>
           </div>
 
-          <div className="">
-            <img src={pokemon.sprites.front_default ?? ''} alt={pokemon.name} className="w-full h-auto md:max-w-64 rounded-lg" />
+          <div className="md:mb-0 mb-6">
+            <img src={officialArtwork} alt={pokemon.name} className="w-16 h-16 md:max-w-64 rounded-lg" />
           </div>
         </div>
 
@@ -79,6 +79,20 @@ function RouteComponent() {
                 value={s.base_stat}
               />
             ))}
+          </div>
+        </div>
+
+        {/* Abilities */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Abilities</h2>
+            <div className="flex flex-wrap gap-2">
+              {pokemon.abilities.map((a) => (
+                <Badge key={a.ability.name}>
+                  {a.ability.name.replace('-', ' ')}{a.is_hidden ? ' (hidden)' : ''}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
       </section>
