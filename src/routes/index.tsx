@@ -1,4 +1,5 @@
 import { Card } from "@/components/card";
+import { ModeToggle } from "@/components/mode-toggle";
 import { PokemonListResponse } from "@/types/api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -47,7 +48,10 @@ function RouteComponent() {
 
   return (
     <div className="p-4">
-      <h1 className="text-6xl font-bold text-center mb-8 text-zinc-900 dark:text-white">Pokédex</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-6xl font-bold text-center mb-8 text-zinc-900 dark:text-white">Pokédex</h1>
+        <ModeToggle />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {pokemonList.map((pokemon) => (
