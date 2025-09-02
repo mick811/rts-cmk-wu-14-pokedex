@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import styles from '@/index.css?url'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,10 +51,10 @@ function RootComponent() {
   )
 }
 
-function RootDocument({ 
-    children 
-}: { 
-    children: ReactNode 
+function RootDocument({
+  children
+}: {
+  children: ReactNode
 }) {
   return (
     <html>
@@ -61,7 +62,9 @@ function RootDocument({
         <HeadContent />
       </head>
       <body className='dark:bg-zinc-950 dark:text-zinc-200 bg-zinc-50 text-zinc-900 min-h-screen antialiased'>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
         <Scripts />
         <ReactQueryDevtools />
         <TanStackRouterDevtools />
